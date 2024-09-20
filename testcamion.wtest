@@ -1,0 +1,8 @@
+import cosas.*
+import transformaciones.*
+
+describe "name" {
+  test "Bumblebee" {
+    assert.equals(15, bumblebee.nivelPeligrosidad())
+  }
+}
