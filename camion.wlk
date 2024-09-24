@@ -1,6 +1,7 @@
 import cosas.*
 import destinos.*
 import caminos.*
+
 object camion {
 	const property cosas = #{}
 
@@ -26,11 +27,26 @@ object camion {
 	}
 
 	method elDeNivel(nivel) {
+		self.validarElDeNivel(nivel)
 		return cosas.find({cosa => cosa.nivelPeligrosidad() == nivel})
 	}
 
+	method validarElDeNivel(nivel) {
+		if (not self.hayDeNivel(nivel)) {
+			self.error("No hay ninguna cosa de nivel " + nivel)
+		}
+	}
+
+	method hayDeNivel(nivel) {
+		return cosas.any({cosa => cosa.nivelPeligrosidad() == nivel})
+	}
+
 	method pesoTotal() {
-		return 1000 + cosas.sum({cosa => cosa.peso()})
+		return 1000 + self.pesoDeCosas()
+	}
+
+	method pesoDeCosas() {
+		return cosas.sum({cosa => cosa.peso()})
 	}
 
 	method excedidoDePeso() {
@@ -46,11 +62,11 @@ object camion {
 	}
 
 	method puedeCircularEnRuta(nivelMaximoPeligrosidad) {
-		return (not self.excedidoDePeso()) and (self.objetosQueSuperanPeligrosidad(nivelMaximoPeligrosidad) == 0)
+		return (not self.excedidoDePeso()) and (self.objetosQueSuperanPeligrosidad(nivelMaximoPeligrosidad) == #{})
 	}
 
 	method tieneAlgoQuePesaEntre(min, max) {
-		return cosas.any({cosa => cosa.peso() > min and cosa.peso() < max})
+		return cosas.any({cosa => cosa.peso().between(min, max)})
 	}
 
 	method cosaMasPesada() {
@@ -72,12 +88,12 @@ object camion {
 	}
 
 	method validarTransportar(destino, camino) {
-		self.validarPeso(self.pesoTotal())
-		destinos.validarBultos(self)
-		caminos.validarViaje(self)
+		self.validarPeso()
+		destino.validarBultos(self)
+		camino.validarViaje(self)
 	}
 
-	method validarPeso(peso) {
+	method validarPeso() {
 		if (self.excedidoDePeso()) {
 			self.error("El camión está excedido de peso")
 		}

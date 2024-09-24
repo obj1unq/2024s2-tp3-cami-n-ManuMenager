@@ -1,4 +1,5 @@
 import transformaciones.*
+import estado.*
 object knightRider {
 	method peso() { 
 		return 500 
@@ -53,9 +54,9 @@ object paqueteDeLadrillos {
 	}
 
 	method bulto() {
-		if (1 <= ladrillos <= 100) {
+		if (ladrillos.between(1, 100)) {
 			return 1
-		} else if (101 <= ladrillos <= 300) {
+		} else if (ladrillos.between(101, 300)) {
 			return 2
 		} else {
 			return 3
@@ -80,34 +81,22 @@ object arenaAGranel {
 }
 
 object bateriaAntiaerea {
-	var property tieneMisiles = false
+	var property estado = misiles
 
 	method peso(){
-		if (tieneMisiles) {
-			return 300
-		} else {
-			return 200
-		}
+		estado.peso()
 	}
 
 	method nivelPeligrosidad(){
-		if (tieneMisiles) {
-			return 100
-		} else {
-			return 0
-		}
+		estado.nivelPeligrosidad()
 	}
 
 	method consecuenciaDeCarga() { 
-		tieneMisiles = true
+		estado = misiles
 	}
 
 	method bulto() {
-		if (tieneMisiles) {
-			return 2
-		} else {
-			return 1
-		}
+		estado.bulto()
 	}
 }
 
@@ -119,7 +108,11 @@ object contenedorPortuario {
     }
 
 	method peso() {
-		return 100 + cosas.sum({cosa => cosa.peso()})
+		return 100 + self.pesoDeCosas()
+	}
+
+	method pesoDeCosas() {
+		return cosas.sum({cosa => cosa.peso()})
 	}
 
 	method nivelPeligrosidad() {

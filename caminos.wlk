@@ -9,9 +9,7 @@ object ruta9 {
 }
 
 object caminosVecinales {
-    method pesoMaximo() {
-        return 0
-    }
+    var property pesoMaximo = 0
 
     method validarViaje(vehiculo) {
         if (vehiculo.pesoTotal() > self.pesoMaximo()) {

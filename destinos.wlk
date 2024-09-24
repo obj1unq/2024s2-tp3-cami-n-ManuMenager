@@ -1,5 +1,5 @@
 object almacen {
-    const cosas = []
+    const property cosas = []
 
     method bultosMax() {
         return 3
