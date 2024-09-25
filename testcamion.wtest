@@ -1,0 +1,68 @@
+import caminos.*
+import cosas.*
+import camion.*
+import transformaciones.*
+import estado.*
+import destinos.*
+
+
+describe "camion" {
+  test "Mensajes principales" {
+    camion.cargar(bumblebee)
+    camion.descargar(bumblebee)
+    assert.equals(#{}, camion.cosas())
+    camion.cargar(bumblebee)
+
+    assert.that(camion.todoPesoPar())
+    assert.that(camion.hayAlgunoQuePesa(800))
+    assert.throwsException({camion.elDeNivel(4)})
+    assert.equals(1800, camion.pesoTotal())
+    assert.notThat(camion.excedidoDePeso())
+    assert.equals(#{bumblebee}, camion.objetosQueSuperanPeligrosidad(3))
+    assert.equals(#{}, camion.objetosMasPeligrososQue(bumblebee))
+    assert.that(camion.puedeCircularEnRuta(50))
+  }
+}
+
+describe "camion.agregados" {
+  test "Agregados al camión" {
+    camion.cargar(bumblebee)
+    assert.that(camion.tieneAlgoQuePesaEntre(200,1000))
+    camion.cargar(knightRider)
+    assert.equals(bumblebee, camion.cosaMasPesada())
+    assert.equals([800,500], camion.pesos())
+    assert.equals(3, camion.totalBultos())
+  }
+}
+
+describe "camion.consecuencias" {
+  test "Consecuencias de la carga" {
+    camion.cargar(bumblebee)
+    assert.equals(robot, bumblebee.transformacion())
+    camion.cargar(paqueteDeLadrillos)
+    assert.equals(12, paqueteDeLadrillos.ladrillos())
+    camion.cargar(arenaAGranel)
+    assert.equals(20,arenaAGranel.peso())
+    contenedorPortuario.agregar(residuosRadioactivos)
+    contenedorPortuario.agregar(bateriaAntiaerea)
+    camion.cargar(contenedorPortuario)
+    assert.equals(misiles, bateriaAntiaerea.estado())
+    assert.equals(15, residuosRadioactivos.peso())
+  }
+}
+
+describe "camion.validaciones" {
+  test "Validaciones de transporte" {
+    assert.notThat(camion.excedidoDePeso())
+    assert.equals(3, almacen.bultosMax())
+    camion.cargar(knightRider)
+    camion.cargar(bumblebee)
+    assert.throwsException({camion.transportar(almacen,ruta9)})
+    camion.descargar(bumblebee)
+    assert.that(camion.puedeCircularEnRuta(11))
+    camion.transportar(almacen,ruta9)
+    caminosVecinales.pesoMaximo(3000)
+    camion.transportar(almacen,caminosVecinales)
+    assert.equals([knightRider], almacen.cosas())
+  }
+}
