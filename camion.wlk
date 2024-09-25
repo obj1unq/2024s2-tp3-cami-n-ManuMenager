@@ -15,11 +15,7 @@ object camion {
 	}
 
 	method todoPesoPar() {
-		return cosas.all({cosa => self.esPar(cosa.peso())})
-	}
-
-	method esPar(numero) {
-		return numero % 2 == 0
+		return cosas.all({cosa => cosa.peso().even()})
 	}
 
 	method hayAlgunoQuePesa(peso) {
